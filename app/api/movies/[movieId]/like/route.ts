@@ -4,7 +4,7 @@ import { db } from '@/lib/firebase/config';
 
 export async function POST(
   request: NextRequest,
-  context: { params: Promise<{ movieId: string }> }
+  context: { params: { movieId: string } }
 ) {
     try {
         const { profileId } = await request.json();
