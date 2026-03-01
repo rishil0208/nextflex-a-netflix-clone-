@@ -3,12 +3,12 @@ import { doc, setDoc, deleteDoc, serverTimestamp, increment } from 'firebase/fir
 import { db } from '@/lib/firebase/config';
 
 export async function POST(
-    request: NextRequest,
-    { params }: { params: { movieId: string } }
+  request: NextRequest,
+  context: { params: Promise<{ movieId: string }> }
 ) {
     try {
         const { profileId } = await request.json();
-        const { movieId } = params;
+        const { movieId } = await context.params;
 
         if (!profileId) {
             return NextResponse.json({ success: false, error: 'Profile ID required' }, { status: 400 });
