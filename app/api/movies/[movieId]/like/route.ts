@@ -1,9 +1,6 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 
-export async function POST(
-  request: NextRequest,
-  context: { params: Promise<{ movieId: string }> }
-) {
+export async function POST(req: any, context: any) {
   const { movieId } = await context.params;
 
   return NextResponse.json({
@@ -12,10 +9,7 @@ export async function POST(
   });
 }
 
-export async function DELETE(
-  request: NextRequest,
-  context: { params: Promise<{ movieId: string }> }
-) {
+export async function DELETE(req: any, context: any) {
   const { movieId } = await context.params;
 
   return NextResponse.json({
