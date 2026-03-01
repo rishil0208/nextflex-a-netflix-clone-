@@ -3,39 +3,25 @@ import { doc, setDoc, deleteDoc, serverTimestamp, increment } from 'firebase/fir
 import { db } from '@/lib/firebase/config';
 
 export async function POST(
-  request: NextRequest,
+  request: Request,
   context: { params: Promise<{ movieId: string }> }
 ) {
   const { movieId } = await context.params;
 
-  try {
-    return NextResponse.json({
-      success: true,
-      message: `Liked movie ${movieId}`,
-    });
-  } catch (error) {
-    return NextResponse.json(
-      { success: false, error: error },
-      { status: 500 }
-    );
-  }
+  return NextResponse.json({
+    success: true,
+    movieId,
+  });
 }
 
 export async function DELETE(
-  request: NextRequest,
+  request: Request,
   context: { params: Promise<{ movieId: string }> }
 ) {
   const { movieId } = await context.params;
 
-  try {
-    return NextResponse.json({
-      success: true,
-      message: `Unliked movie ${movieId}`,
-    });
-  } catch (error) {
-    return NextResponse.json(
-      { success: false, error: error },
-      { status: 500 }
-    );
-  }
+  return NextResponse.json({
+    success: true,
+    movieId,
+  });
 }
