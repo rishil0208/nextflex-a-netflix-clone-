@@ -1,19 +1,25 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(
-  request: Request,
+  request: NextRequest,
   context: { params: Promise<{ movieId: string }> }
 ) {
   const { movieId } = await context.params;
 
-  return NextResponse.json({ success: true, movieId });
+  return NextResponse.json({
+    success: true,
+    movieId,
+  });
 }
 
 export async function DELETE(
-  request: Request,
+  request: NextRequest,
   context: { params: Promise<{ movieId: string }> }
 ) {
   const { movieId } = await context.params;
 
-  return NextResponse.json({ success: true, movieId });
+  return NextResponse.json({
+    success: true,
+    movieId,
+  });
 }
