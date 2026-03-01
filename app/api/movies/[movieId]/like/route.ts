@@ -6,10 +6,7 @@ export async function POST(
 ) {
   const { movieId } = await context.params;
 
-  return NextResponse.json({
-    success: true,
-    movieId,
-  });
+  return NextResponse.json({ success: true, movieId });
 }
 
 export async function DELETE(
@@ -18,8 +15,5 @@ export async function DELETE(
 ) {
   const { movieId } = await context.params;
 
-  return NextResponse.json({
-    success: true,
-    movieId,
-  });
+  return NextResponse.json({ success: true, movieId });
 }
