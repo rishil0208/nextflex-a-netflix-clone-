@@ -8,6 +8,7 @@ export default function SignupPage() {
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [agreeTerms, setAgreeTerms] = useState(false);
+    
     const [errors, setErrors] = useState<{
         email?: string;
         password?: string;
@@ -45,7 +46,6 @@ export default function SignupPage() {
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
 
-        // Validate all fields
         const passwordError = validatePassword(password);
         const confirmError = password !== confirmPassword ? 'Passwords do not match' : '';
 
@@ -57,14 +57,12 @@ export default function SignupPage() {
             return;
         }
 
-        // Will implement Firebase Auth later
         window.location.href = '/login';
     };
 
     return (
         <div className="font-display bg-background-dark text-white overflow-hidden min-h-screen">
             <div className="relative min-h-screen w-full flex items-center justify-center p-4">
-                {/* Background */}
                 <div className="absolute inset-0 z-0">
                     <div
                         className="absolute inset-0 bg-cover bg-center scale-110 blur-xl brightness-50"
@@ -75,7 +73,6 @@ export default function SignupPage() {
                     <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black opacity-80"></div>
                 </div>
 
-                {/* Glass Card */}
                 <div className="glass-card relative z-10 w-full max-w-[480px] rounded-[2rem] p-8 md:p-12 flex flex-col gap-6">
                     <div className="flex flex-col gap-2">
                         <div className="flex items-center gap-2 mb-2">

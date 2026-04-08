@@ -26,7 +26,6 @@ export default function Top10Card({ movie, rank, onInfoClick, onAddToList, isInL
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
         >
-            {/* Large Rank Number */}
             <div className="text-[200px] font-black leading-none text-stroke mr-[-40px] z-0 select-none" style={{
                 WebkitTextStroke: '3px rgba(255, 255, 255, 0.3)',
                 color: 'transparent',
@@ -35,7 +34,6 @@ export default function Top10Card({ movie, rank, onInfoClick, onAddToList, isInL
                 {rank}
             </div>
 
-            {/* Movie Poster */}
             <div className="w-56 h-80 bg-gray-800 rounded-lg overflow-hidden relative z-10 shadow-2xl">
                 <img
                     src={movie.poster}
@@ -43,7 +41,6 @@ export default function Top10Card({ movie, rank, onInfoClick, onAddToList, isInL
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                 />
 
-                {/* Hover Overlay */}
                 {isHovered && (
                     <div className="absolute inset-0 top-0 left-0 right-0 bottom-0 bg-black/90 rounded-lg flex flex-col items-center justify-center gap-3 p-4 z-20">
                         <div className="text-4xl font-black text-primary mb-2">#{rank}</div>

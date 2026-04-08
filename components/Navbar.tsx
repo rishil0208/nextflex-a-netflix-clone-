@@ -70,7 +70,6 @@ export default function Navbar() {
                             <span className="material-symbols-outlined text-2xl">search</span>
                         </Link>
 
-                        {/* Avatar Dropdown */}
                         <div className="relative">
                             <div
                                 onClick={() => setShowDropdown(!showDropdown)}
@@ -83,7 +82,6 @@ export default function Navbar() {
                                 />
                             </div>
 
-                            {/* Dropdown Menu */}
                             {showDropdown && (
                                 <div className="absolute right-0 mt-2 w-56 glass-card rounded-lg shadow-2xl border border-white/10 overflow-hidden">
                                     <button
@@ -113,7 +111,6 @@ export default function Navbar() {
                 />
             </nav>
 
-            {/* Logout Confirmation Modal */}
             {showLogoutConfirm && (
                 <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm">
                     <div className="glass-card rounded-2xl p-8 max-w-md w-full mx-4 border border-white/10 shadow-2xl">
@@ -144,7 +141,6 @@ export default function Navbar() {
                 </div>
             )}
 
-            {/* Click outside to close dropdown */}
             {showDropdown && (
                 <div
                     className="fixed inset-0 z-40"

@@ -1,0 +1,509 @@
+
+
+VELTRIX : EVENT MANAGEMENT SYSTEM 
+ 
+INTRODUCTION 
+Veltrix is a comprehensive Event Management System (EMS) designed to streamline the 
+organization, scheduling, and management of institution-level events and venues. Built 
+with the modern MERN stack (MongoDB, Express, React, and Node.js), Veltrix provides 
+a centralized platform where administrators can manage physical spaces (venues) and 
+events with precision. The platform distinguishes itself through a premium, dark-
+themed user interface and a focused workflow for both public and university-specific 
+operations, ensuring that event planning is both efficient and visually engaging. 
+ 
+VELTRIX PROJECT STRUCTURE 
+Overview of the project structure for the VELTRIX Events Management System. The 
+project is divided into a Backend (Node.js/Express) and a Frontend (React) folders. 
+ 
+Root Directory 
+Folder/File Explanation 
+backend/ Contains the server-side code, including the API, database models, and 
+business logic. 
+frontend/ Houses the React-based user interface, state management, and client-
+side assets. 
+.gitignore Specifies files and folders that should be ignored by Git 
+(e.g., node_modules, .env). 
+ 
+Backend Directory (/backend) 
+The backend is built with Node.js, Express, and MongoDB (via Mongoose). 
+Folder/File Explanation 
+config/ Contains configuration files, primarily for establishing the connection to 
+the MongoDB database. 
+controllers/ Handles the core logic for API requests, such as user authentication, 
+event creation, and registration processing. 
+middleware/ Custom functions that intercept requests to perform tasks like verifying 
+JWT tokens or handling errors. 
+models/ Defines the Mongoose schemas and data structures for Users, Events, 
+Venues, and Registrations. 
+routes/ Maps specific URL endpoints (e.g., /api/events) to their corresponding 
+controller functions. 
+Folder/File Explanation 
+server.js The main entry point that initializes the Express server, connects to the 
+database, and starts listening for requests. 
+ 
+Frontend Directory (/frontend/src) 
+The frontend is a modern React application utilizing functional components and hooks. 
+Folder/File Explanation 
+components/ Reusable UI components such as buttons, cards, and navigation bars 
+that are used across multiple pages. 
+contexts/ Contains React Context providers responsible for managing global 
+state, such as logged-in user information. 
+pages/ Top-level view components representing unique routes like the Login 
+page, Admin Dashboard, and Event List. 
+lib/ Shared utility functions, API service wrappers (using Axios), and 
+configuration constants. 
+App.js The central component that defines the application's layout and 
+handles client-side routing. 
+index.css The global stylesheet containing the core design system, themes, and 
+utility classes. 
+ 
+DETAILED FOLDER STRUCTURE 
+VELTRIX/ 
+├── backend/ 
+│   ├── config/ 
+│   │   └── db.js                 # Database connection logic 
+│   ├── controllers/ 
+│   │   ├── authController.js     # User login & registration logic 
+│   │   ├── eventController.js    # Event CRUD operations 
+│   │   ├── registrationController.js # Event booking logic 
+│   │   └── venueController.js    # Venue management logic 
+│   ├── middleware/ 
+│   │   └── authMiddleware.js     # JWT verification & route protection 
+│   ├── models/ 
+│   │   ├── User.js               # User schema (Admin/User) 
+│   │   ├── Event.js              # Event schema & requirements 
+│   │   ├── Venue.js              # Physical/Virtual location data 
+│   │   ├── College.js            # Institution classification 
+│   │   └── Registration.js       # Booking & ticket data 
+│   ├── routes/ 
+│   │   ├── authRoutes.js         # /api/auth endpoints 
+│   │   ├── eventRoutes.js        # /api/events endpoints 
+│   │   ├── venueRoutes.js        # /api/venues endpoints 
+│   │   └── registrationRoutes.js # /api/registrations endpoints 
+│   ├── .env                      # Environment variables (DB URI, JWT Secret) 
+│   ├── server.js                 # App entry point & middleware setup 
+│   └── package.json              # Backend dependencies 
+│ 
+├── frontend/ 
+│   ├── public/                   # Static assets & index.html 
+│   ├── src/ 
+│   │   ├── components/ 
+│   │   │   ├── ui/               # Base UI elements (Button, Input, Card) 
+│   │   │   ├── AppShell.js       # Layout with Navbar & Logout 
+│   │   │   ├── Logo.js           # Animated VELTRIX logo 
+│   │   │   ├── RequireAuth.js    # Protects user routes 
+│   │   │   └── RequireAdmin.js   # Protects admin routes 
+│   │   │ 
+│   │   ├── contexts/ 
+│   │   │   └── ThemeContext.js   # Dark/Light mode management 
+│   │   │ 
+│   │   ├── lib/ 
+│   │   │   ├── auth.js           # Session helpers (user, role handling) 
+│   │   │   └── api.js            # Axios configuration 
+│   │   │ 
+│   │   ├── pages/ 
+│   │   │   ├── Auth.js           # Login & Signup page (/) 
+│   │   │   ├── UserEvents.js     # Browse events (/app) 
+│   │   │   ├── MyRegistrations.js # User bookings (/app/my) 
+│   │   │   ├── AdminEvents.js    # Create/manage events (/admin) 
+│   │   │   ├── AdminExplore.js   # View all events (/admin/explore) 
+│   │   │   ├── AdminColleges.js  # Manage colleges (/admin/colleges) 
+│   │   │   └── AdminVenues.js    # Manage venues (/admin/venues) 
+│   │   │ 
+│   │   ├── App.js                # Routing & layout (React Router v6) 
+│   │   ├── index.js              # React entry point 
+│   │   └── index.css             # Global styles 
+│   │ 
+│   └── package.json              # Frontend dependencies 
+│ 
+└── README.md                     # Project documentation 
+ 
+ 
+BACKEND 
+ 
+Db.js 
+The db.js file is responsible for establishing a connection to the MongoDB database using 
+Mongoose. 
+ 
+ 
+Controllers 
+1) authController.js 
+This file handles user authentication processes such as registration and login. It 
+validates user credentials, encrypts passwords, and generates JSON Web Tokens (JWT) 
+for secure authentication. It ensures that only authorized users can access protected 
+resources. 
+2) eventController.js 
+The eventController.js file manages all event-related operations. It includes functions to 
+create, retrieve, update, and delete events (CRUD operations). It processes incoming 
+requests, interacts with the Event model, and sends appropriate responses back to the 
+client. 
+3) registrationController.js 
+This controller manages event registrations. It allows users to register for events and 
+stores the registration details in the database. It also ensures that duplicate or invalid 
+registrations are handled properly. 
+4) venueController.js 
+The venueController.js file handles operations related to venues. It includes 
+functionality to add new venues, update venue details, and retrieve venue information. It 
+ensures that events are assigned to valid venues. 
+ 
+ 
+ 
+
+middleware/authMiddleware.js 
+This middleware is used to protect routes by verifying the authenticity of users. 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+Models 
+1) user.js 
+The User.js model defines the structure of user data in the database. It includes fields 
+such as name, email, and password. It may also include roles (admin/user) to manage 
+access control within the system. 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+2) Event.js 
+The Event.js model represents event-related data. It includes attributes such as event 
+name, date, time, venue, and description. This model is used to store and manage all 
+event details in the database. 
+ 
+ 
+ 
+ 
+
+3) Registration.js 
+This model stores data related to event registrations. It links users with events and keeps 
+track of who has registered for which event. It helps in managing attendance and 
+participation. 
+ 
+ 
+4) Venue.js 
+The Venue.js model defines the structure for storing venue information such as location, 
+capacity, and availability. It ensures that events are assigned to appropriate venues. 
+ 
+
+5) College.js 
+This model stores information about colleges or institutions. It helps in categorizing 
+users or events based on their associated institution. 
+ 
+ 
+Routes 
+1) authRoutes.js 
+This file defines API endpoints related to authentication such as login and registration. It 
+maps these endpoints to the corresponding functions in the authentication controller. 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+2) eventRoutes.js 
+The eventRoutes.js file contains routes for managing events. It defines endpoints for 
+creating, retrieving, updating, and deleting events and connects them to the event 
+controller. 
+ 
+ 
+3) registrationRoutes.js 
+This file handles routes related to event registration. It defines endpoints that allow 
+users to register for events and view registration details. 
+ 
+ 
+
+4) venueRoutes.js 
+The venueRoutes.js file defines endpoints for venue management. It allows the system 
+to perform operations like adding and retrieving venues. 
+ 
+ 
+5) collegeRoutes.js 
+This file contains routes for handling college-related data. It connects HTTP requests to 
+the appropriate controller functions for managing colleges. 
+ 
+
+Server.js 
+The server.js file is the main entry point of the backend application. It initializes the Express 
+server and configures middleware required for handling HTTP requests. It connects the 
+application to the MongoDB database using the configuration defined in db.js. This file also 
+imports and uses all route modules such as authentication, events, venues, and registrations. 
+Finally, it starts the server and listens on a specified port. 
+ 
+ 
+ 
+
+FRONTEND 
+ 
+index.js 
+The index.js file is the entry point of the React application. It renders the main App component 
+into the root DOM element. This file initializes the frontend and starts the React application. 
+ 
+ 
+App.js 
+The App.js file manages the overall routing of the application using React Router v6. It defines 
+different routes for users and administrators and connects them to corresponding pages. It also 
+integrates route protection components to restrict access based on authentication and roles. 
+ 
+ 
+ 
+
+index.css 
+The index.css file contains global styling for the application. It defines themes, layout styles, 
+and design elements to maintain a consistent user interface. 
+ 
+Components 
+1) AppShell.js 
+The AppShell.js component acts as the main layout wrapper for the application. It 
+includes common UI elements such as the navigation bar and logout functionality. It 
+ensures a consistent layout across different pages. 
+ 
+2) Logo.js 
+The Logo.js component represents the VELTRIX branding. It contains an animated SVG 
+logo that enhances the visual appearance of the application and provides a consistent 
+identity. 
+ 
+3) RequireAuth.js 
+This component is used to protect user routes. It checks whether a user is 
+authenticated before allowing access to certain pages. If the user is not logged in, they 
+are redirected to the login page. 
+ 
+ 
+4) RequireAdmin.js 
+The RequireAdmin.js component restricts access to admin-only pages. It verifies 
+whether the logged-in user has admin privileges and prevents unauthorized users from 
+accessing administrative features. 
+ 
+ 
+
+5) Ui folder  
+This folder contains reusable UI components such as buttons, input fields, and cards. 
+These components are designed to be generic and reusable across multiple pages, 
+ensuring consistency and reducing code duplication. 
+ 
+Contexts 
+1) ThemeContext.js 
+The ThemeContext.js file manages the application's theme (dark or light mode). It uses 
+React Context API to provide theme-related data and functions across the application, 
+enabling consistent styling and user preferences. 
+ 
+Lib 
+1) Api.js 
+This file configures Axios for making HTTP requests to the backend. It defines the base 
+URL and may include interceptors for attaching authentication tokens to requests. It 
+centralizes API communication. 
+ 
+ 
+2) auth.js 
+The Auth.js page serves as the entry point for user authentication. It allows users to log 
+in or register by entering their credentials and communicates with backend 
+authentication APIs. 
+ 
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+Pages 
+(Only some parts of the code are shown, as there more than 100 lines of code in each) 
+ 
+1) Auth.js 
+The Auth.js page serves as the entry point for user authentication. It allows users to log 
+in or register by entering their credentials and communicates with backend 
+authentication APIs. 
+ 
+ 
+2) UserEvents.js 
+This page displays available events to users. It fetches event data from the backend and 
+allows users to browse and register for events. 
+ 
+ 
+
+3) MyRegistrations.js 
+The MyRegistrations.js page shows events that the user has registered for. It provides 
+users with a personalized view of their bookings. 
+ 
+ 
+4) AdminEvents.js 
+This page allows administrators to create and manage events. It provides forms and 
+controls for adding, updating, and deleting event details. 
+ 
+
+5) AdminExplore.js 
+The AdminExplore.js page provides administrators with a comprehensive view of all 
+events in the system. It helps in monitoring and managing event data efficiently. 
+ 
+ 
+6) AdminColleges.js 
+This page enables administrators to manage college-related data. It allows adding, 
+updating, and viewing institutions associated with events. 
+ 
+ 
+ 
+
+7) AdminVenues.js 
+The AdminVenues.js page is used for managing venue information. Administrators can 
+add new venues, update existing ones, and ensure proper allocation of venues for 
+events. 
+ 
+ 
+ 
+ 
+DATABASE 
+ 
+Database Overview 
+The VELTRIX Event Management System uses MongoDB as its database. The database is named 
+eventDB and consists of multiple collections to store structured data related to events, users, 
+venues, registrations, and colleges. 
+ 
+Database Collections 
+The database contains the following collections: 
+1) Users Collection 
+Stores user account details. 
+Fields include: Name, Email, Password (encrypted), Role (Admin/User). 
+Function: Handles authentication, authorization, and user management within the 
+system. 
+ 
+2) Events Collection 
+Stores detailed information about events. 
+Fields include: Title, Short Description, Description, Venue, Date, Location, Capacity, 
+IsPremium, EventType, Audience, CreatedBy (User reference). 
+Function: Manages event creation, scheduling, and overall event data handling. 
+
+3) Venues Collection 
+Stores information about event venues. 
+Fields include: Name, Classification. 
+Function: Defines and categorizes venues where events are conducted. 
+ 
+4) Registrations Collection 
+Stores user registrations for events. 
+Fields include: User ID (reference), Event ID (reference), Registration Date. 
+Function: Tracks which users have registered for which events. 
+ 
+5) Colleges Collection 
+Stores details of institutions. 
+Fields include: Name, Type. 
+Function: Represents institutions and helps categorize users or events. 
+ 
+Schema 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+OUTPUTS 
+ 
+LOGIN PAGE 
+ 
+ 
+ 
+CREATING ACCOUNT 
+ 
+ 
+ 
+
+ADMIN CONTROLS 
+CREATING AN EVENT 
+ 
+ 
+ 
+ 
+EVENT EXPLORER 
+ 
+ 
+ 
+
+VIEWING REGISTRATIONS FOR AN EVENT 
+ 
+ 
+ 
+ 
+ 
+ADDING INSTITUTIONS 
+ 
+ 
+ 
+
+VENUES MANAGEMENT (ADDING OR DELETING) 
+ 
+ 
+USER CONTROLS 
+ 
+ 
+EVENT CENTER 
+ 
+ 
+ 
+
+REGISTERING FOR THE EVENT 
+ 
+ 
+ 
+SHOWING YOUR REGISTERED EVENTS 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+DATABASE OUTPUTS 
+ 
+College Collection 
+ 
+ 
+Events Collection 
+ 
+ 
+ 
+
+Registrations collection 
+ 
+ 
+Users collection 
+ 
+ 
+Venues Collection 
+ 

@@ -34,7 +34,6 @@ export default function MovieInfoModal({ movie, onClose, onAddToList, isInList }
                 className="glass-card rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto"
                 onClick={(e) => e.stopPropagation()}
             >
-                {/* Backdrop Image */}
                 <div className="relative h-96">
                     <img
                         src={movie.backdrop || movie.poster}
@@ -43,7 +42,6 @@ export default function MovieInfoModal({ movie, onClose, onAddToList, isInList }
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent"></div>
 
-                    {/* Close Button */}
                     <button
                         onClick={onClose}
                         className="absolute top-4 right-4 w-10 h-10 rounded-full bg-black/50 hover:bg-black/70 flex items-center justify-center transition-colors"
@@ -51,9 +49,9 @@ export default function MovieInfoModal({ movie, onClose, onAddToList, isInList }
                         <span className="material-symbols-outlined text-white">close</span>
                     </button>
 
-                    {/* Title & Actions */}
                     <div className="absolute bottom-8 left-8 right-8">
                         <h2 className="text-4xl font-bold mb-4">{movie.title}</h2>
+                        
                         <div className="flex gap-3">
                             <Link
                                 href={`/player?id=${movie.id}`}
@@ -62,6 +60,7 @@ export default function MovieInfoModal({ movie, onClose, onAddToList, isInList }
                                 <span className="material-symbols-outlined">play_arrow</span>
                                 Play
                             </Link>
+
                             {onAddToList && (
                                 <button
                                     onClick={handleAddToList}
@@ -78,9 +77,7 @@ export default function MovieInfoModal({ movie, onClose, onAddToList, isInList }
                     </div>
                 </div>
 
-                {/* Content */}
                 <div className="p-8">
-                    {/* Stats */}
                     <div className="flex items-center gap-4 mb-6 text-sm">
                         {movie.imdbRating > 0 && (
                             <span className="text-green-500 font-bold">⭐ {movie.imdbRating}/10</span>
@@ -93,10 +90,8 @@ export default function MovieInfoModal({ movie, onClose, onAddToList, isInList }
                         </span>
                     </div>
 
-                    {/* Description */}
                     <p className="text-gray-300 mb-6 leading-relaxed">{movie.description}</p>
 
-                    {/* Genres */}
                     <div className="mb-6">
                         <h3 className="text-sm font-bold text-gray-400 mb-2">Genres</h3>
                         <div className="flex flex-wrap gap-2">
@@ -108,7 +103,6 @@ export default function MovieInfoModal({ movie, onClose, onAddToList, isInList }
                         </div>
                     </div>
 
-                    {/* Cast */}
                     {movie.cast && movie.cast.length > 0 && (
                         <div>
                             <h3 className="text-sm font-bold text-gray-400 mb-3">Cast</h3>

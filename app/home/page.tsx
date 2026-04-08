@@ -27,13 +27,15 @@ interface Movie {
 export default function HomePage() {
     const [movies, setMovies] = useState<Movie[]>([]);
     const [tvShows, setTvShows] = useState<Movie[]>([]);
+    const [top10Movies, setTop10Movies] = useState<Movie[]>([]);
+    const [top10TV, setTop10TV] = useState<Movie[]>([]);
+
     const [currentSlide, setCurrentSlide] = useState(0);
     const [loading, setLoading] = useState(true);
     const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
-    const [myListIds, setMyListIds] = useState<string[]>([]);
-    const [top10Movies, setTop10Movies] = useState<Movie[]>([]);
     const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
-    const [top10TV, setTop10TV] = useState<Movie[]>([]);
+
+    const [myListIds, setMyListIds] = useState<string[]>([]);
 
     useEffect(() => {
         fetchContent();
@@ -52,7 +54,6 @@ export default function HomePage() {
                 ...doc.data()
             })) as Movie[];
 
-            // Separate movies and TV shows
             setMovies(allContent.filter(item => item.type === 'movie'));
             setTvShows(allContent.filter(item => item.type === 'tv'));
         } catch (error) {
@@ -78,11 +79,9 @@ export default function HomePage() {
         try {
             const { doc, getDoc } = await import('firebase/firestore');
 
-            // Fetch Top 10 Movies
             const moviesDoc = await getDoc(doc(db, 'top10', 'movies'));
             if (moviesDoc.exists()) {
                 const moviesList = moviesDoc.data().list || [];
-                // Fetch full movie data for each top 10 entry
                 const movieIds = moviesList.map((item: any) => item.movieId);
                 const moviesRef = collection(db, 'movies');
                 const snapshot = await getDocs(moviesRef);
@@ -93,7 +92,6 @@ export default function HomePage() {
                 setTop10Movies(top10MoviesData);
             }
 
-            // Fetch Top 10 TV Shows
             const tvDoc = await getDoc(doc(db, 'top10', 'tv'));
             if (tvDoc.exists()) {
                 const tvList = tvDoc.data().list || [];
@@ -116,7 +114,6 @@ export default function HomePage() {
 
         try {
             if (isInList) {
-                // Remove from list
                 const response = await fetch(`/api/mylist?movieId=${movieId}`, {
                     method: 'DELETE'
                 });
@@ -125,7 +122,6 @@ export default function HomePage() {
                     setToast({ message: 'Movie removed from My List', type: 'success' });
                 }
             } else {
-                // Add to list
                 const response = await fetch('/api/mylist', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -150,7 +146,7 @@ export default function HomePage() {
 
     if (loading) {
         return (
-            <div className="bg-background-dark text-white min-h-screen flex items-center justify-center">
+            <div className="bg-background-white text-dark min-h-screen flex items-center justify-center">
                 <div className="text-2xl">Loading...</div>
             </div>
         );
@@ -161,27 +157,22 @@ export default function HomePage() {
     const nextMovie = allContent[getNextIndex()];
 
     return (
-        <div className="bg-background-dark text-white min-h-screen overflow-hidden">
+        <div className="bg-background-white text-dark min-h-screen overflow-hidden">
             <Navbar />
 
-            {/* Hero Slider Section */}
             {allContent.length > 0 && currentMovie && (
                 <header className="relative w-full h-[95vh] flex flex-col justify-center items-center pt-16">
-                    {/* Full-Screen Backdrop Background */}
                     <div className="absolute inset-0 z-0">
                         <img
                             src={currentMovie.backdrop || currentMovie.poster}
                             alt={currentMovie.title}
                             className="w-full h-full object-cover"
                         />
-                        {/* Gradient Overlays */}
                         <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-black/40"></div>
                         <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-transparent to-black/80"></div>
                     </div>
 
-                    {/* 3-Card Slider */}
                     <div className="flex items-center justify-center gap-4 w-full px-4 mb-4 h-[60vh] relative z-10">
-                        {/* Previous Card */}
                         {prevMovie && (
                             <div
                                 onClick={prevSlide}
@@ -224,6 +215,7 @@ export default function HomePage() {
                                         <span className="material-symbols-outlined">play_arrow</span>
                                         Play
                                     </Link>
+
                                     <button
                                         onClick={() => setSelectedMovie(currentMovie)}
                                         className="px-6 py-3 bg-gray-500/50 text-white font-bold rounded-lg hover:bg-gray-500/70 transition-colors flex items-center gap-2"
@@ -235,7 +227,6 @@ export default function HomePage() {
                             </div>
                         </div>
 
-                        {/* Next Card */}
                         {nextMovie && (
                             <div
                                 onClick={nextSlide}
@@ -251,7 +242,6 @@ export default function HomePage() {
                         )}
                     </div>
 
-                    {/* Slider Navigation Dots */}<br></br><br></br>
                     <div className="flex gap-2 mt-5 relative z-15">
                         {allContent.map((_, index) => (
                             <button
@@ -264,9 +254,7 @@ export default function HomePage() {
                 </header>
             )}
 
-            {/* Content Sections */}
             <div className="max-w-screen-2xl mx-auto px-8 py-12 space-y-12">
-                {/* Top 10 Movies Section */}
                 {top10Movies.length > 0 && (
                     <div>
                         <h2 className="text-3xl font-bold mb-8 flex items-center gap-3">
@@ -276,7 +264,7 @@ export default function HomePage() {
                         <div className="flex gap-6 overflow-x-auto scrollbar-hide pb-4">
                             {top10Movies.map((movie, index) => (
                                 <Top10Card
-                                    key={movie.id}
+                                    key={`${movie.id}-${index}`}
                                     movie={movie}
                                     rank={index + 1}
                                     onInfoClick={setSelectedMovie}
@@ -298,7 +286,7 @@ export default function HomePage() {
                         <div className="flex gap-6 overflow-x-auto scrollbar-hide pb-4">
                             {top10TV.map((show, index) => (
                                 <Top10Card
-                                    key={show.id}
+                                    key={`${show.id}-${index}`}
                                     movie={show}
                                     rank={index + 1}
                                     onInfoClick={setSelectedMovie}
@@ -347,6 +335,7 @@ export default function HomePage() {
                 )}
             </div>
 
+            {/* Empty State Fallback Screen if Database empty */}
             {allContent.length === 0 && !loading && (
                 <div className="px-8 py-12 text-center h-screen flex items-center justify-center">
                     <div>

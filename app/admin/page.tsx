@@ -7,7 +7,7 @@ import { collection, getDocs, orderBy, query, doc, setDoc, getDoc } from 'fireba
 import { db } from '@/lib/firebase/config';
 
 type ContentType = 'movie' | 'tv';
-type TabType = 'add' | 'manage' | 'top10';
+type TabType = 'add' | 'manage' | 'top10' | 'trending';
 
 const ADMIN_EMAIL = 'rishil0208@gmail.com';
 
@@ -26,6 +26,7 @@ export default function AdminPage() {
     // Top 10 state
     const [top10Movies, setTop10Movies] = useState<Array<{ rank: number, movieId: string, title: string }>>([]);
     const [top10TV, setTop10TV] = useState<Array<{ rank: number, movieId: string, title: string }>>([]);
+    const [trendingMovies, setTrendingMovies] = useState<Array<{ movieId: string, title: string, poster: string, releaseYear: number, imdbRating: number }>>([]);
     const [selectedRank, setSelectedRank] = useState<number>(1);
     const [selectedMovie, setSelectedMovie] = useState<string>('');
 
@@ -82,6 +83,7 @@ export default function AdminPage() {
         try {
             const moviesDoc = await getDoc(doc(db, 'top10', 'movies'));
             const tvDoc = await getDoc(doc(db, 'top10', 'tv'));
+            const trendingDoc = await getDoc(doc(db, 'trending', 'movies'));
 
             if (moviesDoc.exists()) {
                 setTop10Movies(moviesDoc.data().list || []);
@@ -89,8 +91,11 @@ export default function AdminPage() {
             if (tvDoc.exists()) {
                 setTop10TV(tvDoc.data().list || []);
             }
+            if (trendingDoc.exists()) {
+                setTrendingMovies(trendingDoc.data().list || []);
+            }
         } catch (err) {
-            console.error('Error fetching Top 10:', err);
+            console.error('Error fetching Top 10 lists:', err);
         }
     };
 
@@ -206,6 +211,55 @@ export default function AdminPage() {
         }
     };
 
+    const handleAddToTrending = async () => {
+        if (!selectedMovie) {
+            alert('Please select a movie/show');
+            return;
+        }
+
+        const movie = allContent.find(m => m.id === selectedMovie);
+        if (!movie) return;
+
+        if (trendingMovies.some(m => m.movieId === movie.id)) {
+            alert('Already exists in Trending Now list!');
+            return;
+        }
+
+        const newEntry = { 
+            movieId: movie.id, 
+            title: movie.title, 
+            poster: movie.poster || '', 
+            releaseYear: movie.releaseYear || new Date().getFullYear(),
+            imdbRating: movie.imdbRating || 0 
+        };
+        const updatedList = [...trendingMovies, newEntry];
+
+        try {
+            await setDoc(doc(db, 'trending', 'movies'), {
+                list: updatedList
+            });
+            setTrendingMovies(updatedList);
+            setSelectedMovie('');
+            alert('Added to Trending Now (Front Page)!');
+        } catch (err) {
+            console.error('Error updating Trending:', err);
+            alert('Failed to update Trending');
+        }
+    };
+
+    const handleRemoveFromTrending = async (movieIdToRemove: string) => {
+        const filtered = trendingMovies.filter(item => item.movieId !== movieIdToRemove);
+        try {
+            await setDoc(doc(db, 'trending', 'movies'), {
+                list: filtered
+            });
+            setTrendingMovies(filtered);
+        } catch (err) {
+            console.error('Error removing from Trending:', err);
+        }
+    };
+
+
     const filteredContent = allContent.filter(item => item.type === contentType);
     const currentTop10 = contentType === 'movie' ? top10Movies : top10TV;
 
@@ -268,6 +322,13 @@ export default function AdminPage() {
                             }`}
                     >
                         Top 10 Rankings
+                    </button>
+                    <button
+                        onClick={() => setActiveTab('trending')}
+                        className={`px-6 py-3 rounded-lg font-bold transition-colors ${activeTab === 'trending' ? 'bg-primary text-white' : 'bg-white/10 text-gray-400 hover:bg-white/20'
+                            }`}
+                    >
+                        Trending Now
                     </button>
                 </div>
 
@@ -464,6 +525,82 @@ export default function AdminPage() {
                                             </div>
                                             <button
                                                 onClick={() => handleRemoveFromTop10(item.rank)}
+                                                className="px-3 py-1 bg-red-600 hover:bg-red-700 text-white rounded text-sm"
+                                            >
+                                                Remove
+                                            </button>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                )}
+
+                {/* Trending Now Tab */}
+                {activeTab === 'trending' && (
+                    <div className="grid lg:grid-cols-2 gap-8">
+                        {/* Add to Trending */}
+                        <div className="glass-card rounded-2xl p-8">
+                            <h2 className="text-2xl font-bold mb-6">
+                                Add to "Trending Now"
+                            </h2>
+                            <p className="text-sm text-gray-400 mb-4">
+                                Items added here will appear directly on the main Landing Page for anonymous users.
+                            </p>
+
+                            <div className="space-y-4">
+                                <div>
+                                    <label className="block text-sm font-medium mb-2">
+                                        Select Content
+                                    </label>
+                                    <select
+                                        value={selectedMovie}
+                                        onChange={(e) => setSelectedMovie(e.target.value)}
+                                        className="glass-input w-full rounded-lg py-3 px-4 text-white outline-none mb-4"
+                                    >
+                                        <option value="">Choose content to feature...</option>
+                                        {allContent.map(item => (
+                                            <option key={item.id} value={item.id}>{item.title} ({item.releaseYear})</option>
+                                        ))}
+                                    </select>
+                                </div>
+
+                                <button
+                                    onClick={handleAddToTrending}
+                                    className="bg-primary hover:bg-red-700 text-white font-bold py-3 px-8 rounded-lg w-full"
+                                >
+                                    Feature on Landing Page
+                                </button>
+                            </div>
+                        </div>
+
+                        {/* Current Trending */}
+                        <div className="glass-card rounded-2xl p-8">
+                            <h2 className="text-2xl font-bold mb-6">
+                                Current Featured Trending
+                            </h2>
+
+                            {trendingMovies.length === 0 ? (
+                                <div className="text-center py-8 text-gray-400">
+                                    No movies featured in Trending Now yet
+                                </div>
+                            ) : (
+                                <div className="space-y-3">
+                                    {trendingMovies.map((item, index) => (
+                                        <div
+                                            key={item.movieId || index}
+                                            className="flex items-center gap-4 p-4 bg-white/5 rounded-lg"
+                                        >
+                                            {item.poster && (
+                                                <img src={item.poster} alt={item.title} className="w-12 h-16 object-cover rounded" />
+                                            )}
+                                            <div className="flex-1">
+                                                <h3 className="font-bold">{item.title}</h3>
+                                                <p className="text-xs text-gray-400">{item.releaseYear} • ★ {item.imdbRating}</p>
+                                            </div>
+                                            <button
+                                                onClick={() => handleRemoveFromTrending(item.movieId)}
                                                 className="px-3 py-1 bg-red-600 hover:bg-red-700 text-white rounded text-sm"
                                             >
                                                 Remove

@@ -33,7 +33,6 @@ export default function MovieCard({ movie, onInfoClick, onAddToList, isInList }:
                 />
             </div>
 
-            {/* Hover Overlay */}
             {isHovered && (
                 <div className="absolute inset-0 top-0 left-0 right-0 bottom-0 bg-black/80 rounded-lg flex flex-col items-center justify-center gap-3 p-4 z-10">
                     <h3 className="text-sm font-semibold text-center line-clamp-2">{movie.title}</h3>

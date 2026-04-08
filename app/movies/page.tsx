@@ -135,7 +135,7 @@ export default function MoviesPage() {
                                 <div className="flex gap-6 overflow-x-auto scrollbar-hide pb-4">
                                     {top10Movies.map((movie, index) => (
                                         <Top10Card
-                                            key={movie.id}
+                                            key={`${movie.id}-${index}`}
                                             movie={movie}
                                             rank={index + 1}
                                             onInfoClick={setSelectedMovie}
