@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { collection, query, where, getDocs } from 'firebase/firestore';
-import { db } from '@/lib/firebase/config';
+// Removed import { db } due to Netlify build error
 
 export async function GET(request: NextRequest) {
     try {
+        const { db } = await import('@/lib/firebase/config');
         const { searchParams } = new URL(request.url);
         const q = searchParams.get('q') || '';
         const genre = searchParams.get('genre');

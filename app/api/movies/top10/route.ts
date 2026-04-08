@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { collection, query, where, orderBy, limit, getDocs } from 'firebase/firestore';
-import { db } from '@/lib/firebase/config';
+// Removed import { db }
 
 export async function GET(request: NextRequest) {
     try {
+        const { db } = await import('@/lib/firebase/config');
         const { searchParams } = new URL(request.url);
         const type = searchParams.get('type') || 'movie';
 

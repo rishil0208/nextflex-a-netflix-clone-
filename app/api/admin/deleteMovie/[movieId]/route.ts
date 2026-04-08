@@ -1,12 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { doc, deleteDoc } from 'firebase/firestore';
-import { db } from '@/lib/firebase/config';
+// Removed import { db }
 
 export async function DELETE(
     request: NextRequest,
     context: { params: Promise<{ movieId: string }> }
 ) {
     try {
+        const { db } = await import('@/lib/firebase/config');
         // Await params in Next.js 15+
         const { movieId } = await context.params;
 

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import axios from 'axios';
 import { addDoc, collection, serverTimestamp, getDocs, query, where } from 'firebase/firestore';
-import { db } from '@/lib/firebase/config';
+// Removed top-level import of { db } to prevent Firebase initialization at build time
 
 const TMDB_API_KEY = process.env.TMDB_API_KEY;
 const OMDB_API_KEY = process.env.OMDB_API_KEY;
@@ -10,6 +10,9 @@ const OMDB_BASE_URL = 'http://www.omdbapi.com';
 
 export async function POST(request: NextRequest) {
     try {
+        // Dynamically import db so Firebase only initializes when the route is actually called
+        const { db } = await import('@/lib/firebase/config');
+
         const { movieName, type = 'movie' } = await request.json();
 
         if (!movieName) {
